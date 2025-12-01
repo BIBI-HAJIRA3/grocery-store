@@ -114,7 +114,8 @@ const orderSchema = new mongoose.Schema({
     city: String,
     pincode: String,
     lat: Number,
-    lng: Number
+    lng: Number,
+    notes:String
   },
   status: { type: String, enum: ['pending', 'completed', 'cancelled'], default: 'pending' },
   createdAt: { type: Date, default: Date.now }
@@ -582,6 +583,7 @@ app.get('/user', (req, res) => {
 <input id="line1" placeholder="Address line 1">
 <input id="city" placeholder="City">
 <input id="pincode" placeholder="Pincode">
+<textarea id="notes" rows="3" placeholder="Any special requests (optional)"></textarea>
 <button id="checkoutBtn">Place Order</button>
 <div id="status" style="color:green;margin-top:8px"></div>
   
@@ -655,6 +657,8 @@ document.getElementById('checkoutBtn').addEventListener('click', async ()=>{
   const line1 = document.getElementById('line1').value.trim();
   const city = document.getElementById('city').value.trim();
   const pincode = document.getElementById('pincode').value.trim();
+  const notes = document.getElementById('notes').value.trim();
+
 
   if (!name || !phone || !line1 || !city || !pincode) {
     return alert('Fill delivery details');
@@ -670,7 +674,7 @@ document.getElementById('checkoutBtn').addEventListener('click', async ()=>{
   const payload = {
     items,
     total,
-    deliveryAddress: { name, phone, line1, city, pincode }
+    deliveryAddress: { name, phone, line1, city, pincode,notes}
   };
 
   const res = await fetch('/api/placeGuestOrder', {
@@ -989,6 +993,7 @@ app.listen(PORT, () => {
   console.log(`✓ MongoDB: ${MONGO_URI}`);
   console.log(`Test admin login: admin@grocery.com / admin123`);
 });
+
 
 
 

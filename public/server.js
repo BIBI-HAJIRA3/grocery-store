@@ -601,13 +601,15 @@ app.get('/user', (req, res) => {
     products.forEach(p=>{
       const card=document.createElement('div');card.className='card';
       card.innerHTML=
-        '<img src="'+(p.image||'')+'">'+
-        '<h4>'+escapeHtml(p.name)+'</h4>'+
-        '<div>₹'+p.price+'</div>'+
-        '<div>'+escapeHtml(p.category)+'</div>'+
-        '<div>'+escapeHtml(p.unit||'')+'</div>'+
-        '<input type="number" min="1" value="1" id="qty_'+p._id+'">'+
-        '<button onclick="addToCart(\\''+p._id+'\\')">Add to cart</button>';
+  '<img src="'+(p.image||'')+'">'+
+  '<h4>'+escapeHtml(p.name)+'</h4>'+
+  '<div>₹'+p.price+'</div>'+
+  '<div>'+escapeHtml(p.category)+'</div>'+
+  '<div>'+escapeHtml(p.unit||'')+'</div>'+
+  '<div style="font-size:12px;color:#555;">'+escapeHtml(p.description||'')+'</div>'+
+  '<input type="number" min="1" value="1" id="qty_'+p._id+'">'+
+  '<button onclick="addToCart(\\''+p._id+'\\')">Add to cart</button>';
+
       list.appendChild(card);
     });
   }
@@ -987,6 +989,7 @@ app.listen(PORT, () => {
   console.log(`✓ MongoDB: ${MONGO_URI}`);
   console.log(`Test admin login: admin@grocery.com / admin123`);
 });
+
 
 
 

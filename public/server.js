@@ -295,14 +295,41 @@ app.get('/admin/dashboard', (req, res) => {
     .card{background:#fff;border-radius:8px;padding:12px;box-shadow:0 1px 3px rgba(0,0,0,0.1);margin-top:12px;}
     input{padding:6px;border-radius:4px;border:1px solid #ccc;}
     label{display:block;margin-top:6px;}
-    .form-grid{
-  display:flex;
-  flex-wrap:wrap;
-  gap:8px;
+   
+  .table-wrap{
+  width:100%;
+  overflow-x:auto;
+}
+table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:12px;
+  background:#fff;
+  border-radius:8px;
+  overflow:hidden;
+  box-shadow:0 1px 3px rgba(0,0,0,0.1);
+}
+th,td{
+  border:1px solid #ddd;
+  padding:8px;
+  text-align:left;
+  font-size:13px;
+}
+th{background:#f5f5f5;}
+
+@media (max-width:600px){
+  body{padding:10px;}
+  th,td{font-size:12px;padding:6px;}
+  header h1{font-size:18px;}
+}
+
+}
+
+.form-grid{
+  display:block;
 }
 .form-field{
-  flex:1 1 180px;
-  min-width:140px;
+  margin-bottom:8px;
 }
 .form-field label{
   display:block;
@@ -314,18 +341,8 @@ app.get('/admin/dashboard', (req, res) => {
   box-sizing:border-box;
 }
 
-/* On small screens, full-width fields */
-@media (max-width:600px){
-  .card{
-    padding:10px;
-  }
-  .form-grid{
-    flex-direction:column;
-  }
-  .form-field{
-    width:100%;
-  }
-}
+
+
 
   </style>
 </head>
@@ -343,13 +360,16 @@ app.get('/admin/dashboard', (req, res) => {
   <span id="count">0 orders</span>
 </div>
 
-<table aria-live="polite">
-  <thead><tr>
-    <th>User</th><th>Contact</th><th>Address</th><th>Notes</th><th>Items</th>
-    <th>Total</th><th>Time</th><th>Status</th><th>Actions</th>
-  </tr></thead>
-  <tbody id="ordersTbody"></tbody>
-</table>
+<div class="table-wrap">
+  <table aria-live="polite">
+    <thead><tr>
+      <th>User</th><th>Contact</th><th>Address</th><th>Notes</th><th>Items</th>
+      <th>Total</th><th>Time</th><th>Status</th><th>Actions</th>
+    </tr></thead>
+    <tbody id="ordersTbody"></tbody>
+  </table>
+</div>
+
 
 <div class="card">
   <h2>Products</h2>
@@ -542,9 +562,9 @@ async function saveProduct(){
   const unit=document.getElementById('prodUnit').value.trim();
   const description=document.getElementById('prodDesc').value.trim();
   const imageInput=document.getElementById('prodImage');
-  if(!name||!price||!category){
+  if(!name||!price){
     document.getElementById('prodMsg').style.color='red';
-    document.getElementById('prodMsg').textContent='Name, price and category are required';
+    document.getElementById('prodMsg').textContent='Name and price are required';
     return;
   }
   const fd=new FormData();
@@ -996,7 +1016,7 @@ app.post('/api/admin/products', authMiddleware, adminMiddleware, upload.single('
   try {
     const { name, description, price, category, unit } = req.body;
     if (!name || !price ) {
-      return res.status(400).json({ error: 'Name, price and category are required' });
+      return res.status(400).json({ error: 'Name and price are required' });
     }
     const product = await Product.create({
       name,
@@ -1051,6 +1071,7 @@ app.listen(PORT, () => {
   console.log(`✓ MongoDB: ${MONGO_URI}`);
   console.log(`Test admin login: admin@grocery.com / admin123`);
 });
+
 
 
 

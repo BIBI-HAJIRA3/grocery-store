@@ -232,6 +232,8 @@ app.get('/admin', (req, res) => {
   res.send(`<!doctype html>
 <html><head>
   <meta charset="utf-8"><title>Admin Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
   <style>
     body{font-family:Arial,Helvetica,sans-serif;padding:18px;max-width:400px;margin:auto;background:#f5f7fb;}
     h1{text-align:center;color:#0a7a07;}
@@ -277,6 +279,8 @@ app.get('/admin/dashboard', (req, res) => {
   res.send(`<!doctype html>
 <html><head>
   <meta charset="utf-8"><title>Admin Panel</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
   <style>
     body{font-family:Arial,Helvetica,sans-serif;padding:16px;background:#f5f7fb;}
     h1{color:#0a7a07;margin-top:0;}
@@ -527,6 +531,8 @@ app.get('/user', (req, res) => {
   res.send(`<!doctype html>
 <html><head>
   <meta charset="utf-8"><title>User — Grocery</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
   <style>
     body{font-family:Arial,Helvetica,sans-serif;padding:18px;max-width:1100px;margin:auto;background:#f5f7fb;}
     header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
@@ -1001,3 +1007,4 @@ app.listen(PORT, () => {
   console.log(`✓ MongoDB: ${MONGO_URI}`);
   console.log(`Test admin login: admin@grocery.com / admin123`);
 });
+

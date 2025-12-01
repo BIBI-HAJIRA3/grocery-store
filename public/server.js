@@ -345,7 +345,7 @@ app.get('/admin/dashboard', (req, res) => {
 
 <table aria-live="polite">
   <thead><tr>
-    <th>User</th><th>Contact</th><th>Address</th><th>Items</th>
+    <th>User</th><th>Contact</th><th>Address</th><th>Notes</th><th>Items</th>
     <th>Total</th><th>Time</th><th>Status</th><th>Actions</th>
   </tr></thead>
   <tbody id="ordersTbody"></tbody>
@@ -436,19 +436,22 @@ async function deleteOrder(id){
 function renderOrders(list){
   const tbody=document.getElementById('ordersTbody');tbody.innerHTML='';
   list.forEach(o=>{
-    const items=o.items.map(i=>i.name+' x '+i.quantity).join(', ');
-    const address=o.deliveryAddress?(o.deliveryAddress.line1+', '+o.deliveryAddress.city):'-';
-    const tr=document.createElement('tr');
-    const status=o.status||'pending';
-    tr.innerHTML=
-      '<td>'+escapeHtml(o.userId?.name||'N/A')+'</td>'+
-      '<td>'+escapeHtml(o.deliveryAddress?.phone||'')+'</td>'+
-      '<td>'+escapeHtml(address)+'</td>'+
-      '<td>'+escapeHtml(items)+'</td>'+
-      '<td>₹'+(o.total||0)+'</td>'+
-      '<td>'+new Date(o.createdAt).toLocaleString()+'</td>'+
-      '<td>'+escapeHtml(status)+'</td>'+
-      '<td></td>';
+    const items = o.items.map(i => i.name + ' x ' + i.quantity).join(', ');
+const address = o.deliveryAddress ? (o.deliveryAddress.line1 + ', ' + o.deliveryAddress.city) : '-';
+const notes = o.deliveryAddress?.notes || '';
+const tr = document.createElement('tr');
+const status = o.status || 'pending';
+tr.innerHTML =
+  '<td>'+escapeHtml(o.userId?.name||'N/A')+'</td>'+
+  '<td>'+escapeHtml(o.deliveryAddress?.phone||'')+'</td>'+
+  '<td>'+escapeHtml(address)+'</td>'+
+  '<td>'+escapeHtml(notes)+'</td>'+
+  '<td>'+escapeHtml(items)+'</td>'+
+  '<td>₹'+(o.total||0)+'</td>'+
+  '<td>'+new Date(o.createdAt).toLocaleString()+'</td>'+
+  '<td>'+escapeHtml(status)+'</td>'+
+  '<td></td>';
+
     const actionsTd=tr.lastChild;
     if(status!=='completed'){
       const cBtn=document.createElement('button');cBtn.textContent='Mark completed';
@@ -1048,6 +1051,7 @@ app.listen(PORT, () => {
   console.log(`✓ MongoDB: ${MONGO_URI}`);
   console.log(`Test admin login: admin@grocery.com / admin123`);
 });
+
 
 
 

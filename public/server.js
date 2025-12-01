@@ -814,21 +814,12 @@ app.post('/api/placeGuestOrder', async (req, res) => {
     const { items, total, deliveryAddress } = req.body;
     if (!items || !items.length) return res.status(400).json({ error: 'No items' });
 
-    const { lat, lng } = deliveryAddress || {};
-    if (typeof lat !== 'number' || typeof lng !== 'number') {
-      return res.status(400).json({ error: 'Location required. Tap "Use my location" first.' });
-    }
-
-    const dist = distanceKm(STORE_LOCATION.lat, STORE_LOCATION.lng, lat, lng);
-    if (dist > MAX_KM) {
-      return res.status(400).json({ error: `Outside delivery area (>${MAX_KM} km)` });
-    }
-
+    // Location no longer required; just store whatever comes
     const guest = await User.create({
-      name: deliveryAddress.name || 'Guest',
+      name: deliveryAddress?.name || 'Guest',
       email: `guest+${Date.now()}@local`,
       passwordHash: await bcrypt.hash(Math.random().toString(36).slice(2), 8),
-      phone: deliveryAddress.phone || ''
+      phone: deliveryAddress?.phone || ''
     });
 
     const order = await Order.create({
@@ -854,6 +845,9 @@ app.post('/api/placeGuestOrder', async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
+
+   
 
 // --------------------
 // Authenticated orders
@@ -1007,4 +1001,5 @@ app.listen(PORT, () => {
   console.log(`✓ MongoDB: ${MONGO_URI}`);
   console.log(`Test admin login: admin@grocery.com / admin123`);
 });
+
 

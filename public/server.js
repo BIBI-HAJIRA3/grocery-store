@@ -295,6 +295,38 @@ app.get('/admin/dashboard', (req, res) => {
     .card{background:#fff;border-radius:8px;padding:12px;box-shadow:0 1px 3px rgba(0,0,0,0.1);margin-top:12px;}
     input{padding:6px;border-radius:4px;border:1px solid #ccc;}
     label{display:block;margin-top:6px;}
+    .form-grid{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+.form-field{
+  flex:1 1 180px;
+  min-width:140px;
+}
+.form-field label{
+  display:block;
+  font-size:13px;
+  margin-bottom:2px;
+}
+.form-field input{
+  width:100%;
+  box-sizing:border-box;
+}
+
+/* On small screens, full-width fields */
+@media (max-width:600px){
+  .card{
+    padding:10px;
+  }
+  .form-grid{
+    flex-direction:column;
+  }
+  .form-field{
+    width:100%;
+  }
+}
+
   </style>
 </head>
 <body>
@@ -993,6 +1025,7 @@ app.listen(PORT, () => {
   console.log(`✓ MongoDB: ${MONGO_URI}`);
   console.log(`Test admin login: admin@grocery.com / admin123`);
 });
+
 
 
 

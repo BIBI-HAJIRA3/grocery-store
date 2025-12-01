@@ -90,7 +90,7 @@ const productSchema = new mongoose.Schema({
   name: { type: String, required: true },
   description: String,
   price: { type: Number, required: true },
-  category: { type: String, required: true },
+  category: { type: String },
   image: String,                // optional
   unit: { type: String, default: '' }, // e.g. "25 kg packet"
   createdAt: { type: Date, default: Date.now }
@@ -354,16 +354,39 @@ app.get('/admin/dashboard', (req, res) => {
 <div class="card">
   <h2>Products</h2>
   <h3>Add / Edit product</h3>
-  <input id="prodId" type="hidden">
-  <label>Name: <input id="prodName"></label>
-  <label>Price: <input id="prodPrice" type="number" step="0.01"></label>
-  <label>Category: <input id="prodCategory"></label>
-  <label>Quantity / Unit (e.g. 25 kg packet): <input id="prodUnit"></label>
-  <label>Description: <input id="prodDesc"></label>
-  <label>Image (optional): <input id="prodImage" type="file" accept="image/*"></label>
-  <button onclick="saveProduct()">Save product</button>
-  <button onclick="resetProductForm()">Clear form</button>
-  <div id="prodMsg" style="margin-top:6px;color:green;"></div>
+<input id="prodId" type="hidden">
+
+<div class="form-grid">
+  <div class="form-field">
+    <label for="prodName">Name</label>
+    <input id="prodName">
+  </div>
+  <div class="form-field">
+    <label for="prodPrice">Price</label>
+    <input id="prodPrice" type="number" step="0.01">
+  </div>
+  <div class="form-field">
+    <label for="prodCategory">Category(Optional)</label>
+    <input id="prodCategory">
+  </div>
+  <div class="form-field">
+    <label for="prodUnit">Quantity / Unit (e.g. 25 kg packet)</label>
+    <input id="prodUnit">
+  </div>
+  <div class="form-field">
+    <label for="prodDesc">Description</label>
+    <input id="prodDesc">
+  </div>
+  <div class="form-field">
+    <label for="prodImage">Image (optional)</label>
+    <input id="prodImage" type="file" accept="image/*">
+  </div>
+</div>
+
+<button onclick="saveProduct()">Save product</button>
+<button onclick="resetProductForm()">Clear form</button>
+<div id="prodMsg" style="margin-top:6px;color:green;"></div>
+
 
   <h3 style="margin-top:16px;">All products</h3>
   <table style="width:100%;border-collapse:collapse;margin-top:8px;">
@@ -969,7 +992,7 @@ app.get('/events', (req, res) => {
 app.post('/api/admin/products', authMiddleware, adminMiddleware, upload.single('image'), async (req, res) => {
   try {
     const { name, description, price, category, unit } = req.body;
-    if (!name || !price || !category) {
+    if (!name || !price ) {
       return res.status(400).json({ error: 'Name, price and category are required' });
     }
     const product = await Product.create({
@@ -1025,6 +1048,7 @@ app.listen(PORT, () => {
   console.log(`✓ MongoDB: ${MONGO_URI}`);
   console.log(`Test admin login: admin@grocery.com / admin123`);
 });
+
 
 
 

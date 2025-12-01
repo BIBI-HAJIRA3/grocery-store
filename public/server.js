@@ -857,15 +857,7 @@ app.post('/api/orders', authMiddleware, async (req, res) => {
     const { items, total, deliveryAddress } = req.body;
     if (!items || !items.length) return res.status(400).json({ error: 'No items' });
 
-    const { lat, lng } = deliveryAddress || {};
-    if (typeof lat !== 'number' || typeof lng !== 'number') {
-      return res.status(400).json({ error: 'Location required' });
-    }
-    const dist = distanceKm(STORE_LOCATION.lat, STORE_LOCATION.lng, lat, lng);
-    if (dist > MAX_KM) {
-      return res.status(400).json({ error: `Outside delivery area (>${MAX_KM} km)` });
-    }
-
+    // No distance / lat-lng check now
     const user = await User.findById(req.user.id);
     if (!user) return res.status(404).json({ error: 'User not found' });
 
@@ -892,6 +884,9 @@ app.post('/api/orders', authMiddleware, async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
+
+ 
 
 app.get('/api/orders/my', authMiddleware, async (req, res) => {
   try {
@@ -1001,5 +996,6 @@ app.listen(PORT, () => {
   console.log(`✓ MongoDB: ${MONGO_URI}`);
   console.log(`Test admin login: admin@grocery.com / admin123`);
 });
+
 
 

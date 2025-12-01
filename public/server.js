@@ -551,7 +551,7 @@ app.get('/user', (req, res) => {
   <h1>Grocery Store</h1>
   <div>
     <!-- Call button: change number later -->
-    <a href="tel:+911234567890"
+    <a href="tel:+917892469393"
        style="margin-right:8px;text-decoration:none;display:inline-flex;align-items:center;
               justify-content:center;width:40px;height:40px;border-radius:50%;
               background:#14a20c;color:#fff;font-size:20px;border:1px solid #0a7a07;">
@@ -576,17 +576,15 @@ app.get('/user', (req, res) => {
   <h2>Your Cart</h2>
   <div id="cartList">Cart empty</div>
 
-  <h3>Delivery details</h3>
-  <input id="name" placeholder="Your name">
-  <input id="phone" placeholder="Phone">
-  <input id="line1" placeholder="Address line 1">
-  <input id="city" placeholder="City">
-  <input id="pincode" placeholder="Pincode">
-  <button onclick="useMyLocation()">Use my location (for km check)</button>
-  <input id="lat" placeholder="Latitude" readonly>
-  <input id="lng" placeholder="Longitude" readonly>
-  <button id="checkoutBtn">Place Order</button>
-  <div id="status" style="color:green;margin-top:8px"></div>
+<h3>Delivery details</h3>
+<input id="name" placeholder="Your name">
+<input id="phone" placeholder="Phone">
+<input id="line1" placeholder="Address line 1">
+<input id="city" placeholder="City">
+<input id="pincode" placeholder="Pincode">
+<button id="checkoutBtn">Place Order</button>
+<div id="status" style="color:green;margin-top:8px"></div>
+  
 </div>
 
 <script>
@@ -648,54 +646,47 @@ app.get('/user', (req, res) => {
   }
   function removeItem(id){delete cart[id];renderCart();}
 
-  function useMyLocation(){
-    if(!navigator.geolocation){alert('Geolocation not supported');return;}
-    navigator.geolocation.getCurrentPosition(
-      pos=>{
-        document.getElementById('lat').value=pos.coords.latitude.toFixed(6);
-        document.getElementById('lng').value=pos.coords.longitude.toFixed(6);
-      },
-      err=>{alert('Failed to get location');}
-    );
+  
+document.getElementById('checkoutBtn').addEventListener('click', async ()=>{
+  const name = document.getElementById('name').value.trim();
+  const phone = document.getElementById('phone').value.trim();
+  const line1 = document.getElementById('line1').value.trim();
+  const city = document.getElementById('city').value.trim();
+  const pincode = document.getElementById('pincode').value.trim();
+
+  if (!name || !phone || !line1 || !city || !pincode) {
+    return alert('Fill delivery details');
   }
 
-  document.getElementById('checkoutBtn').addEventListener('click', async ()=>{
-    const name=document.getElementById('name').value.trim();
-    const phone=document.getElementById('phone').value.trim();
-    const line1=document.getElementById('line1').value.trim();
-    const city=document.getElementById('city').value.trim();
-    const pincode=document.getElementById('pincode').value.trim();
-    const lat=parseFloat(document.getElementById('lat').value);
-    const lng=parseFloat(document.getElementById('lng').value);
-    if(!name||!phone||!line1||!city||!pincode)return alert('Fill delivery details');
-    if(Number.isNaN(lat)||Number.isNaN(lng))return alert('Tap "Use my location" first so we can check 6km radius');
-
-    const items=Object.keys(cart).map(pid=>{
-      const p=products.find(x=>x._id===pid);
-      return {productId:pid,name:p.name,price:p.price,quantity:cart[pid]};
-    });
-    if(!items.length)return alert('Cart empty');
-
-    const total=items.reduce((s,i)=>s+i.price*i.quantity,0);
-    const payload={
-      items,total,
-      deliveryAddress:{name,phone,line1,city,pincode,lat,lng}
-    };
-
-    const res=await fetch('/api/placeGuestOrder',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify(payload)
-    });
-    const data=await res.json();
-    if(res.ok){
-      document.getElementById('status').textContent='Order placed — admin will be notified';
-      cart={};renderCart();
-    }else{
-      alert(data.error||'Failed to place order');
-    }
+  const items = Object.keys(cart).map(pid => {
+    const p = products.find(x => x._id === pid);
+    return { productId: pid, name: p.name, price: p.price, quantity: cart[pid] };
   });
+  if (!items.length) return alert('Cart empty');
 
+  const total = items.reduce((s, i) => s + i.price * i.quantity, 0);
+  const payload = {
+    items,
+    total,
+    deliveryAddress: { name, phone, line1, city, pincode }
+  };
+
+  const res = await fetch('/api/placeGuestOrder', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
+  const data = await res.json();
+  if (res.ok) {
+    document.getElementById('status').textContent = 'Order placed — admin will be notified';
+    cart = {};
+    renderCart();
+  } else {
+    alert(data.error || 'Failed to place order');
+  }
+});
+
+ 
   loadProducts();
   renderCart();
 </script>
@@ -996,6 +987,7 @@ app.listen(PORT, () => {
   console.log(`✓ MongoDB: ${MONGO_URI}`);
   console.log(`Test admin login: admin@grocery.com / admin123`);
 });
+
 
 
 

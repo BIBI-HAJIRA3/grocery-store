@@ -210,7 +210,7 @@ app.get('/', (req, res) => {
          height:100vh;font-family:Arial,Helvetica,sans-serif;
          background:#f5f7fb;color:#0a7a07;}
     .box{text-align:center;}
-    .logo{font-size:28px;font-weight:700;margin-bottom:8px;}
+    .logo{font-size:40px;font-weight:700;margin-bottom:8px;}
     .sub{font-size:16px;color:#444;}
   </style>
 </head>
@@ -1062,6 +1062,21 @@ app.delete('/api/admin/products/:id', authMiddleware, adminMiddleware, async (re
     res.status(500).json({ error: err.message });
   }
 });
+app.put('/api/admin/orders/:id/status', authMiddleware, adminMiddleware, async (req, res) => {
+  try {
+    const { status } = req.body;
+    const order = await Order.findByIdAndUpdate(
+      req.params.id,
+      { status: status || 'completed' },
+      { new: true }
+    );
+    if (!order) return res.status(404).json({ error: 'Order not found' });
+    res.json(order);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 
 // --------------------
 // Start server
@@ -1071,6 +1086,7 @@ app.listen(PORT, () => {
   console.log(`✓ MongoDB: ${MONGO_URI}`);
   console.log(`Test admin login: admin@grocery.com / admin123`);
 });
+
 
 
 

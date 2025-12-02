@@ -1071,27 +1071,44 @@ app.post('/api/admin/products', authMiddleware, adminMiddleware, upload.single('
   }
 });
 
-
+// Admin: update product.
+// If admin uploads a NEW image, send it to Cloudinary and replace product.image with the new URL.
+// If no file is sent, keep the existing image URL untouched.
 app.put('/api/admin/products/:id', authMiddleware, adminMiddleware, upload.single('image'), async (req, res) => {
   try {
     const { name, description, price, category, unit } = req.body;
+
+    // Build an update object, but remove any undefined fields so we only change what was sent.
     const update = {
       name,
       description,
-      price: price !== undefined ? Number(price) : undefined,
+      price: price !== undefined && price !== '' ? Number(price) : undefined,
       category,
       unit: unit !== undefined ? unit : undefined
     };
     Object.keys(update).forEach(k => update[k] === undefined && delete update[k]);
-    if (req.file) update.image = '/uploads/' + req.file.filename;
+
+    // If a new image file is provided, upload it to Cloudinary and set update.image.
+    if (req.file) {
+      const uploadResult = await cloudinary.uploader.upload(req.file.path, {
+        folder: 'grocery/products',
+        use_filename: true,
+        unique_filename: true
+      });
+      update.image = uploadResult.secure_url || '';
+    }
 
     const product = await Product.findByIdAndUpdate(req.params.id, update, { new: true });
     if (!product) return res.status(404).json({ error: 'Product not found' });
+
     res.json(product);
   } catch (err) {
+    console.error('Update product error:', err);
     res.status(500).json({ error: err.message });
   }
 });
+
+
 
 app.delete('/api/admin/products/:id', authMiddleware, adminMiddleware, async (req, res) => {
   try {
@@ -1126,6 +1143,7 @@ app.listen(PORT, () => {
   console.log(`✓ MongoDB: ${MONGO_URI}`);
   console.log(`Test admin login: admin@grocery.com / admin123`);
 });
+
 
 
 

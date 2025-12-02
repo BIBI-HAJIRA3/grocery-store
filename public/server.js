@@ -965,14 +965,17 @@ document.getElementById('checkoutBtn').addEventListener('click', async ()=>{
   loadSavedDetails(); // Prefill
 
   // Listen for admin updates (SSE)
-    // Listen for admin updates (SSE)
   try {
     const es = new EventSource('/events');
     es.onmessage = function(ev){
-      console.log('SSE raw:', ev.data);   // <‑‑ add this
+      console.log('SSE raw:', ev.data);
       try{
         const data = JSON.parse(ev.data);
         if (!data || !data.status) return;
+
+        // match this device's phone, so only this customer's orders update
+        const myPhone = document.getElementById('phone').value.trim();
+        if (!data.deliveryAddress || data.deliveryAddress.phone !== myPhone) return;
 
         if (data.status === 'confirmed') {
           document.getElementById('liveStatus').textContent =
@@ -1375,7 +1378,7 @@ app.put('/api/admin/orders/:id/status', authMiddleware, adminMiddleware, async (
     ).populate('userId', 'name email phone');
     if (!order) return res.status(404).json({ error: 'Order not found' });
 
-    // notify via SSE
+    // notify via SSE for status change
     broadcastNewOrder({
       id: order._id,
       userName: order.userId?.name,
@@ -1393,7 +1396,6 @@ app.put('/api/admin/orders/:id/status', authMiddleware, adminMiddleware, async (
 });
 
 
-
 // --------------------
 // Start server
 // --------------------
@@ -1402,27 +1404,6 @@ app.listen(PORT, () => {
   console.log(`✓ MongoDB: ${MONGO_URI}`);
   console.log(`Test admin login: admin@grocery.com / admin123`);
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

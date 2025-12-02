@@ -965,16 +965,15 @@ document.getElementById('checkoutBtn').addEventListener('click', async ()=>{
   loadSavedDetails(); // Prefill
 
   // Listen for admin updates (SSE)
+    // Listen for admin updates (SSE)
   try {
     const es = new EventSource('/events');
     es.onmessage = function(ev){
+      console.log('SSE raw:', ev.data);   // <‑‑ add this
       try{
         const data = JSON.parse(ev.data);
-        // data.status: 'pending' | 'confirmed' | 'completed' | ...
         if (!data || !data.status) return;
 
-        // You can filter by phone or name if you want only this user’s orders.
-        // For now, just show a generic message:
         if (data.status === 'confirmed') {
           document.getElementById('liveStatus').textContent =
             'Your order has been confirmed by the store';
@@ -1403,6 +1402,7 @@ app.listen(PORT, () => {
   console.log(`✓ MongoDB: ${MONGO_URI}`);
   console.log(`Test admin login: admin@grocery.com / admin123`);
 });
+
 
 
 

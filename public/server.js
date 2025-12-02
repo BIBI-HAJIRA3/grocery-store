@@ -681,58 +681,84 @@ app.get('/user', (req, res) => {
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
   <style>
-    body{font-family:Arial,Helvetica,sans-serif;padding:18px;max-width:1100px;margin:auto;background:#f5f7fb;}
-    header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
-        .grid{
-      display:grid;
-      grid-template-columns:repeat(2,minmax(0,1fr));
-      gap:14px;
-      padding:4px 0;
-    }
+  body{font-family:Arial,Helvetica,sans-serif;padding:18px;max-width:1100px;margin:auto;background:#f5f7fb;}
+  header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:14px;
+    padding:4px 0;
+  }
 
-    .card{
-      width:100%;
-      min-height:190px;
-      box-sizing:border-box;
-      border:1px solid #ddd;
-      padding:8px;
-      border-radius:10px;
-      background:#fff;
-      box-shadow:0 1px 3px rgba(0,0,0,0.05);
-      display:flex;
-      flex-direction:column;
-      justify-content:space-between;
-    }
+  .card{
+    width:100%;
+    min-height:190px;
+    box-sizing:border-box;
+    border:1px solid #ddd;
+    padding:8px;
+    border-radius:10px;
+    background:#fff;
+    box-shadow:0 1px 3px rgba(0,0,0,0.05);
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+  }
 
-    .card h4{
-      margin:6px 0 4px;
-      font-size:14px;
-      font-weight:600;
-    }
+  .card h4{
+    margin:6px 0 4px;
+    font-size:14px;
+    font-weight:600;
+  }
 
-    img{
-      width:100%;
-      height:90px;
-      object-fit:cover;
-      background:#f3f3f3;
-      border-radius:6px;
-    }
+  img{
+    width:100%;
+    height:90px;
+    object-fit:cover;
+    background:#f3f3f3;
+    border-radius:6px;
+  }
 
-    input,select,button,textarea{display:block;margin:8px 0;padding:8px;width:100%;max-width:360px;border-radius:4px;border:1px solid #ccc;}
-   button{
-  cursor:pointer;
-  border-radius:4px;
-  border:1px solid #009688;
-  background:#009688;
-  color:#fff;
-  font-weight:600;
-}
-button:hover{
-  background:#00796b;
-}
+  /* Global form elements */
+  input,select,button,textarea{
+    display:block;
+    margin:8px 0;
+    padding:8px;
+    width:100%;
+    max-width:360px;
+    border-radius:4px;
+    border:1px solid #ccc;
+    box-sizing:border-box;
+  }
 
-    #cartBox{border-top:2px solid #ccc;padding-top:12px;margin-top:12px;background:#ffffff;border-radius:8px;padding:12px;box-shadow:0 1px 3px rgba(0,0,0,0.05)}
-  </style>
+  /* Override just for inputs inside product cards (e.g. quantity) */
+  .card input{
+    max-width:100%;
+  }
+
+  button{
+    cursor:pointer;
+    border-radius:4px;
+    border:1px solid #009688;
+    background:#009688;
+    color:#fff;
+    font-weight:600;
+  }
+  button:hover{
+    background:#00796b;
+  }
+
+  #cartBox{
+    border-top:2px solid #ccc;
+    padding-top:12px;
+    margin-top:12px;
+    background:#ffffff;
+    border-radius:8px;
+    padding:12px;
+    box-shadow:0 1px 3px rgba(0,0,0,0.05)
+  }
+</style>
+
+  
 </head>
 <body>
 <header>
@@ -1275,6 +1301,7 @@ app.listen(PORT, () => {
   console.log(`✓ MongoDB: ${MONGO_URI}`);
   console.log(`Test admin login: admin@grocery.com / admin123`);
 });
+
 
 
 

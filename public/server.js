@@ -532,24 +532,33 @@ function renderOrders(list){
   const tbody=document.getElementById('ordersTbody');tbody.innerHTML='';
   list.forEach(o=>{
     const items = o.items.map(i => i.name + ' x ' + i.quantity).join(', ');
-const address = o.deliveryAddress ? (o.deliveryAddress.line1 + ', ' + o.deliveryAddress.city) : '-';
-const notes = o.deliveryAddress?.notes || '';
-const tr = document.createElement('tr');
-const status = o.status || 'pending';
-tr.innerHTML =
-  '<td>'+escapeHtml(o.userId?.name||'N/A')+'</td>'+
-  '<td>'+escapeHtml(o.deliveryAddress?.phone||'')+'</td>'+
-  '<td>'+escapeHtml(address)+'</td>'+
-  '<td>'+escapeHtml(notes)+'</td>'+
-  '<td>'+escapeHtml(items)+'</td>'+
-  '<td>₹'+(o.total||0)+'</td>'+
-  '<td>'+new Date(o.createdAt).toLocaleString()+'</td>'+
-  '<td>'+escapeHtml(status)+'</td>'+
-  '<td></td>';
+    const address = o.deliveryAddress ? (o.deliveryAddress.line1 + ', ' + o.deliveryAddress.city) : '-';
+    const notes = o.deliveryAddress?.notes || '';
+    const tr = document.createElement('tr');
+    const status = o.status || 'pending';
+    tr.innerHTML =
+      '<td>'+escapeHtml(o.userId?.name||'N/A')+'</td>'+
+      '<td>'+escapeHtml(o.deliveryAddress?.phone||'')+'</td>'+
+      '<td>'+escapeHtml(address)+'</td>'+
+      '<td>'+escapeHtml(notes)+'</td>'+
+      '<td>'+escapeHtml(items)+'</td>'+
+      '<td>₹'+(o.total||0)+'</td>'+
+      '<td>'+new Date(o.createdAt).toLocaleString()+'</td>'+
+      '<td>'+escapeHtml(status)+'</td>'+
+      '<td></td>';
 
     const actionsTd=tr.lastChild;
+
+    if (status === 'pending') {
+      const confBtn = document.createElement('button');
+      confBtn.textContent = 'Confirm';
+      confBtn.onclick = () => changeStatus(o._id, 'confirmed');
+      actionsTd.appendChild(confBtn);
+    }
+
     if(status!=='completed'){
       const cBtn=document.createElement('button');cBtn.textContent='Mark completed';
+      cBtn.style.marginLeft='4px';
       cBtn.onclick=()=>changeStatus(o._id,'completed');
       actionsTd.appendChild(cBtn);
     }
@@ -810,7 +819,8 @@ app.get('/user', (req, res) => {
 <textarea id="notes" rows="3" placeholder="Any special requests (optional)"></textarea>
 <button id="checkoutBtn">Place Order</button>
 <div id="status" style="color:green;margin-top:8px"></div>
-  
+<div id="liveStatus" style="color:#008080;margin-top:6px;font-weight:600;"></div>
+
 </div>
 
 <script>
@@ -950,9 +960,37 @@ document.getElementById('checkoutBtn').addEventListener('click', async ()=>{
   }
 });
 
-  loadProducts();
+    loadProducts();
   renderCart();
-  loadSavedDetails(); // Prefill name/phone/address if this device has them saved.
+  loadSavedDetails(); // Prefill
+
+  // Listen for admin updates (SSE)
+  try {
+    const es = new EventSource('/events');
+    es.onmessage = function(ev){
+      try{
+        const data = JSON.parse(ev.data);
+        // data.status: 'pending' | 'confirmed' | 'completed' | ...
+        if (!data || !data.status) return;
+
+        // You can filter by phone or name if you want only this user’s orders.
+        // For now, just show a generic message:
+        if (data.status === 'confirmed') {
+          document.getElementById('liveStatus').textContent =
+            'Your order has been confirmed by the store';
+        } else if (data.status === 'completed') {
+          document.getElementById('liveStatus').textContent =
+            'Your order is completed / delivered';
+        }
+      }catch(e){
+        console.warn('Bad SSE data', e);
+      }
+    };
+  } catch(e){
+    console.warn('SSE not supported', e);
+  }
+
+  
  
 </script>
 </body></html>`);
@@ -1335,13 +1373,26 @@ app.put('/api/admin/orders/:id/status', authMiddleware, adminMiddleware, async (
       req.params.id,
       { status: status || 'completed' },
       { new: true }
-    );
+    ).populate('userId', 'name email phone');
     if (!order) return res.status(404).json({ error: 'Order not found' });
+
+    // notify via SSE
+    broadcastNewOrder({
+      id: order._id,
+      userName: order.userId?.name,
+      deliveryAddress: order.deliveryAddress,
+      items: order.items,
+      total: order.total,
+      createdAt: order.createdAt,
+      status: order.status
+    });
+
     res.json(order);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
+
 
 
 // --------------------
@@ -1352,6 +1403,7 @@ app.listen(PORT, () => {
   console.log(`✓ MongoDB: ${MONGO_URI}`);
   console.log(`Test admin login: admin@grocery.com / admin123`);
 });
+
 
 
 

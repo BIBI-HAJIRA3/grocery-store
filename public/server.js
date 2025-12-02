@@ -250,12 +250,13 @@ app.get('/admin', (req, res) => {
 
   <style>
     body{font-family:Arial,Helvetica,sans-serif;padding:18px;max-width:400px;margin:auto;background:#f5f7fb;}
-    h1{text-align:center;color:#0a7a07;}
+    h1{text-align:center;color:#009688;}
     input,button{display:block;width:100%;margin:8px 0;padding:8px;border-radius:4px;border:1px solid #ccc;}
-    button{cursor:pointer;border:1px solid #0a7a07;background:#14a20c;color:#fff;font-weight:600;}
-    button:hover{background:#0e7d09;}
+    button{cursor:pointer;border:1px solid #009688;background:#009688;color:#fff;font-weight:600;}
+    button:hover{background:#00796b;}
     #error{color:red;margin-top:8px;}
   </style>
+  
 </head>
 <body>
   <h1>Admin Login</h1>
@@ -737,16 +738,17 @@ button:hover{
 <header>
   <h1>Grocery Store</h1>
   <div>
-    <!-- Call button: change number later -->
-    <a href="tel:+917892469393"
-       style="margin-right:8px;text-decoration:none;display:inline-flex;align-items:center;
-              justify-content:center;width:40px;height:40px;border-radius:50%;
-              background:#14a20c;color:#fff;font-size:20px;border:1px solid #0a7a07;">
-      📞
-    </a>
-    <button onclick="window.location.href='/user?v=${APP_VERSION}'" style="margin-right:8px;">Home</button>
-    <button onclick="window.location.href='/admin'">Admin</button>
-  </div>
+  <!-- Call button: change number later -->
+  <a href="tel:+9999999999999"
+     style="margin-right:8px;text-decoration:none;display:inline-flex;align-items:center;
+            justify-content:center;width:40px;height:40px;border-radius:50%;
+            background:#008080;color:#fff;font-size:20px;border:1px solid #0a7a07;">
+    📞
+  </a>
+  <button onclick="window.location.href='/user?v=${APP_VERSION}'" style="margin-right:8px;">Home</button>
+  <button onclick="window.location.href='/admin'">Admin</button>
+</div>
+
 </header>
 
 <div>
@@ -1273,6 +1275,7 @@ app.listen(PORT, () => {
   console.log(`✓ MongoDB: ${MONGO_URI}`);
   console.log(`Test admin login: admin@grocery.com / admin123`);
 });
+
 
 
 

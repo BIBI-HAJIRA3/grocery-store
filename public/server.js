@@ -219,12 +219,19 @@ app.get('/', (req, res) => {
   <meta charset="utf-8">
   <title>Welcome</title>
   <style>
-    body{margin:0;display:flex;align-items:center;justify-content:center;
-         height:100vh;font-family:Arial,Helvetica,sans-serif;
-         background:#f5f7fb;color:#0a7a07;}
+    body{
+      margin:0;display:flex;align-items:center;justify-content:center;
+      height:100vh;font-family:Arial,Helvetica,sans-serif;
+      background:#f5f7fb;color:#008080; /* teal text */
+    }
     .box{text-align:center;}
-    .logo{font-size:40px;font-weight:700;margin-bottom:8px;}
-    .sub{font-size:16px;color:#444;}
+    .logo{
+      font-size:52px;  /* bigger */
+      font-weight:700;
+      margin-bottom:8px;
+      color:#008080;   /* teal for the main heading */
+    }
+    .sub{font-size:18px;color:#444;}
   </style>
 </head>
 <body>
@@ -1304,6 +1311,7 @@ app.listen(PORT, () => {
   console.log(`✓ MongoDB: ${MONGO_URI}`);
   console.log(`Test admin login: admin@grocery.com / admin123`);
 });
+
 
 
 

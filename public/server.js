@@ -628,8 +628,9 @@ app.get('/user', (req, res) => {
   <style>
     body{font-family:Arial,Helvetica,sans-serif;padding:18px;max-width:1100px;margin:auto;background:#f5f7fb;}
     header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
-    .grid{display:flex;flex-wrap:wrap;gap:12px}
-    .card{width:210px;border:1px solid #ddd;padding:10px;border-radius:8px;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,0.05)}
+   .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;}
+
+.card{width:100%;border:1px solid #ddd;padding:10px;border-radius:8px;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,0.05);}
     .card h4{margin:6px 0;}
     img{width:100%;height:120px;object-fit:cover;background:#f3f3f3;border-radius:4px;}
     input,select,button,textarea{display:block;margin:8px 0;padding:8px;width:100%;max-width:360px;border-radius:4px;border:1px solid #ccc;}
@@ -1178,6 +1179,7 @@ app.listen(PORT, () => {
   console.log(`✓ MongoDB: ${MONGO_URI}`);
   console.log(`Test admin login: admin@grocery.com / admin123`);
 });
+
 
 
 

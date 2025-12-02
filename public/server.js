@@ -732,8 +732,11 @@ app.get('/user', (req, res) => {
 
   /* Override just for inputs inside product cards (e.g. quantity) */
   .card input{
-    max-width:100%;
-  }
+  width:100%;
+  max-width:none;
+  box-sizing:border-box;
+}
+
 
   button{
     cursor:pointer;
@@ -1301,6 +1304,7 @@ app.listen(PORT, () => {
   console.log(`✓ MongoDB: ${MONGO_URI}`);
   console.log(`Test admin login: admin@grocery.com / admin123`);
 });
+
 
 
 

@@ -550,27 +550,27 @@ function renderOrders(list){
     const actionsTd=tr.lastChild;
 
     if (status === 'pending') {
-      const confBtn = document.createElement('button');
-      confBtn.textContent = 'Confirm';
-      confBtn.onclick = () => changeStatus(o._id, 'confirmed');
+      const confBtn=document.createElement('button');
+      confBtn.textContent='Confirm';
+      confBtn.onclick=()=>changeStatus(o._id,'confirmed');
       actionsTd.appendChild(confBtn);
-    }
-
-    if(status!=='completed'){
-      const cBtn=document.createElement('button');cBtn.textContent='Mark completed';
-      cBtn.style.marginLeft='4px';
-      cBtn.onclick=()=>changeStatus(o._id,'completed');
-      actionsTd.appendChild(cBtn);
-    }
-    if(status==='completed'||status==='cancelled'){
-      const dBtn=document.createElement('button');dBtn.textContent='Delete';dBtn.style.marginLeft='4px';
+    } else if (status === 'confirmed') {
+      const compBtn=document.createElement('button');
+      compBtn.textContent='Mark completed';
+      compBtn.onclick=()=>changeStatus(o._id,'completed');
+      actionsTd.appendChild(compBtn);
+    } else if (status==='completed' || status==='cancelled') {
+      const dBtn=document.createElement('button');
+      dBtn.textContent='Delete';
       dBtn.onclick=()=>deleteOrder(o._id);
       actionsTd.appendChild(dBtn);
     }
+
     tbody.appendChild(tr);
   });
   document.getElementById('count').textContent=list.length+' orders';
 }
+
 
 async function updateProfile(){
   const token=ensureToken();if(!token)return;
@@ -1403,6 +1403,7 @@ app.listen(PORT, () => {
   console.log(`✓ MongoDB: ${MONGO_URI}`);
   console.log(`Test admin login: admin@grocery.com / admin123`);
 });
+
 
 
 

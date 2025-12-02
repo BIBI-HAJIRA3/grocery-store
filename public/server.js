@@ -386,7 +386,7 @@ th{background:#f5f5f5;}
 
 <div class="card">
   <h2>Products</h2>
-  <h3>Add / Edit product</h3>
+  <h3>Add product</h3>
 <input id="prodId" type="hidden">
 
 <div class="form-grid">
@@ -683,6 +683,39 @@ app.get('/user', (req, res) => {
 <script>
   let products=[];
   let cart={};
+    // Load previously saved delivery details from this device (localStorage).
+  function loadSavedDetails(){
+    try{
+      const raw=localStorage.getItem('userDetails');
+      if(!raw)return;
+      const d=JSON.parse(raw);
+      if(d.name)document.getElementById('name').value=d.name;
+      if(d.phone)document.getElementById('phone').value=d.phone;
+      if(d.line1)document.getElementById('line1').value=d.line1;
+      if(d.city)document.getElementById('city').value=d.city;
+      if(d.pincode)document.getElementById('pincode').value=d.pincode;
+      // notes is always optional, so do NOT prefill it; user can type it fresh each order.
+    }catch(e){
+      console.warn('Failed to load saved user details',e);
+    }
+  }
+
+  // Save delivery details (except notes) to this device so user doesn’t retype next time.
+  function saveDetailsForNextTime(){
+    try{
+      const d={
+        name:document.getElementById('name').value.trim(),
+        phone:document.getElementById('phone').value.trim(),
+        line1:document.getElementById('line1').value.trim(),
+        city:document.getElementById('city').value.trim(),
+        pincode:document.getElementById('pincode').value.trim()
+      };
+      localStorage.setItem('userDetails',JSON.stringify(d));
+    }catch(e){
+      console.warn('Failed to save user details',e);
+    }
+  }
+
   function escapeHtml(s){return (s||'').toString().replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
 
   async function loadProducts(){
@@ -775,6 +808,7 @@ document.getElementById('checkoutBtn').addEventListener('click', async ()=>{
   });
   const data = await res.json();
   if (res.ok) {
+    saveDetailsForNextTime();
     document.getElementById('status').textContent = 'Order placed — admin will be notified';
     cart = {};
     renderCart();
@@ -783,9 +817,10 @@ document.getElementById('checkoutBtn').addEventListener('click', async ()=>{
   }
 });
 
- 
   loadProducts();
   renderCart();
+  loadSavedDetails(); // Prefill name/phone/address if this device has them saved.
+ 
 </script>
 </body></html>`);
 });
@@ -1143,6 +1178,7 @@ app.listen(PORT, () => {
   console.log(`✓ MongoDB: ${MONGO_URI}`);
   console.log(`Test admin login: admin@grocery.com / admin123`);
 });
+
 
 
 

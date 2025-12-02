@@ -15,9 +15,9 @@ require('dotenv').config();
 const cloudinary = require('cloudinary').v2;
 
 cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,   // dvsd1cvcs
-  api_key: process.env.CLOUDINARY_API_KEY,         // 435683111951679
-  api_secret: process.env.CLOUDINARY_API_SECRET    // 2nb4_cahAwLNl6jXqZEHRwDnIiA
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,   // 
+  api_key: process.env.CLOUDINARY_API_KEY,         // 
+  api_secret: process.env.CLOUDINARY_API_SECRET    // 
   // Do NOT hard‑code the secret in code; keep it only in env vars.
 });
 
@@ -1275,6 +1275,7 @@ app.listen(PORT, () => {
   console.log(`✓ MongoDB: ${MONGO_URI}`);
   console.log(`Test admin login: admin@grocery.com / admin123`);
 });
+
 
 
 

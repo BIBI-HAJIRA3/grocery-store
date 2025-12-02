@@ -739,7 +739,7 @@ button:hover{
   <h1>Grocery Store</h1>
   <div>
   <!-- Call button: change number later -->
-  <a href="tel:+9999999999999"
+  <a href="tel:+917892469393"
      style="margin-right:8px;text-decoration:none;display:inline-flex;align-items:center;
             justify-content:center;width:40px;height:40px;border-radius:50%;
             background:#008080;color:#fff;font-size:20px;border:1px solid #0a7a07;">
@@ -1275,6 +1275,7 @@ app.listen(PORT, () => {
   console.log(`✓ MongoDB: ${MONGO_URI}`);
   console.log(`Test admin login: admin@grocery.com / admin123`);
 });
+
 
 
 

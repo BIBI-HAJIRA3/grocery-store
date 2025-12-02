@@ -1012,25 +1012,52 @@ app.get('/events', (req, res) => {
 // --------------------
 // Admin Product CRUD
 // --------------------
+// Admin: create product with optional image.
+// Flow:
+// 1) Multer reads the file from the admin's phone (field name: "image").
+// 2) If there is a file, upload it to Cloudinary under folder "grocery/products".
+// 3) Cloudinary returns a secure_url; store that URL in product.image.
+// 4) If there is NO file, image will just be an empty string (text‑only product).
 app.post('/api/admin/products', authMiddleware, adminMiddleware, upload.single('image'), async (req, res) => {
   try {
     const { name, description, price, category, unit } = req.body;
-    if (!name || !price ) {
+
+    // Basic validation so admin must at least set name + price.
+    if (!name || !price) {
       return res.status(400).json({ error: 'Name and price are required' });
     }
+
+    let imageUrl = '';
+
+    // If admin selected an image, send it to Cloudinary.
+    if (req.file) {
+      // req.file.path is the temporary file path created by Multer.
+      const uploadResult = await cloudinary.uploader.upload(req.file.path, {
+        folder: 'grocery/products',    // You will see files under this folder in Cloudinary.
+        use_filename: true,            // Keep original file name where possible.
+        unique_filename: true          // Add random string to avoid collisions.
+      });
+
+      // secure_url is the HTTPS URL your app will use to display the image.
+      imageUrl = uploadResult.secure_url || '';
+    }
+
     const product = await Product.create({
       name,
       description,
       price: Number(price),
       category,
       unit,
-      image: req.file ? '/uploads/' + req.file.filename : ''
+      image: imageUrl
     });
+
     res.status(201).json(product);
   } catch (err) {
+    console.error('Create product error:', err);
     res.status(500).json({ error: err.message });
   }
 });
+
 
 app.put('/api/admin/products/:id', authMiddleware, adminMiddleware, upload.single('image'), async (req, res) => {
   try {
@@ -1086,6 +1113,7 @@ app.listen(PORT, () => {
   console.log(`✓ MongoDB: ${MONGO_URI}`);
   console.log(`Test admin login: admin@grocery.com / admin123`);
 });
+
 
 
 

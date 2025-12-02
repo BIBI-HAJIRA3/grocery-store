@@ -297,13 +297,14 @@ app.get('/admin/dashboard', (req, res) => {
 
   <style>
     body{font-family:Arial,Helvetica,sans-serif;padding:16px;background:#f5f7fb;}
-    h1{color:#0a7a07;margin-top:0;}
+    h1{color:#009688;margin-top:0;}
     table{width:100%;border-collapse:collapse;margin-top:12px;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.1);}
     th,td{border:1px solid #ddd;padding:8px;text-align:left;font-size:14px;}
     th{background:#f5f5f5;}
     .controls{display:flex;gap:8px;margin-bottom:12px;align-items:center;flex-wrap:wrap;}
-    button{cursor:pointer;border-radius:4px;border:1px solid #0a7a07;background:#14a20c;color:#fff;font-weight:600;padding:6px 10px;}
-    button:hover{background:#0e7d09;}
+    button{cursor:pointer;border-radius:4px;border:1px solid #009688;background:#009688;color:#fff;font-weight:600;padding:6px 10px;}
+    button:hover{background:#00796b;}
+
     header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;}
     .card{background:#fff;border-radius:8px;padding:12px;box-shadow:0 1px 3px rgba(0,0,0,0.1);margin-top:12px;}
     input{padding:6px;border-radius:4px;border:1px solid #ccc;}
@@ -717,8 +718,18 @@ app.get('/user', (req, res) => {
     }
 
     input,select,button,textarea{display:block;margin:8px 0;padding:8px;width:100%;max-width:360px;border-radius:4px;border:1px solid #ccc;}
-    button{cursor:pointer;border-radius:4px;border:1px solid #0a7a07;background:#14a20c;color:#fff;font-weight:600;}
-    button:hover{background:#0e7d09;}
+   button{
+  cursor:pointer;
+  border-radius:4px;
+  border:1px solid #009688;
+  background:#009688;
+  color:#fff;
+  font-weight:600;
+}
+button:hover{
+  background:#00796b;
+}
+
     #cartBox{border-top:2px solid #ccc;padding-top:12px;margin-top:12px;background:#ffffff;border-radius:8px;padding:12px;box-shadow:0 1px 3px rgba(0,0,0,0.05)}
   </style>
 </head>
@@ -1262,6 +1273,7 @@ app.listen(PORT, () => {
   console.log(`✓ MongoDB: ${MONGO_URI}`);
   console.log(`Test admin login: admin@grocery.com / admin123`);
 });
+
 
 
 

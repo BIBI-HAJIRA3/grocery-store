@@ -354,6 +354,42 @@ th{background:#f5f5f5;}
   box-sizing:border-box;
 }
 
+    .account-card{
+      max-width:420px;
+      margin:16px auto;
+      padding:12px;
+      border-radius:10px;
+      background:#ffffff;
+      box-shadow:0 1px 3px rgba(0,0,0,0.08);
+      border:1px solid #e0e0e0;
+    }
+    .account-card h3{
+      margin:0 0 8px;
+      font-size:18px;
+    }
+    .account-form-group{
+      margin-bottom:10px;
+    }
+    .account-form-group label{
+      display:block;
+      font-size:13px;
+      margin-bottom:3px;
+    }
+    .account-form-group input{
+      width:100%;
+      box-sizing:border-box;
+      padding:8px;
+      border-radius:4px;
+      border:1px solid #ccc;
+    }
+    .account-actions{
+      margin-top:10px;
+      display:flex;
+      gap:8px;
+    }
+    .account-actions button{
+      flex:1;
+    }
 
 
 
@@ -430,14 +466,31 @@ th{background:#f5f5f5;}
   </table>
 </div>
 
-<div class="card">
+<div class="account-card">
   <h2>Admin account settings</h2>
-  <label>New email: <input id="newEmail" type="email"></label>
-  <label>Current password: <input id="currentPassword" type="password"></label>
-  <label>New password: <input id="newPassword" type="password"></label>
-  <button onclick="updateProfile()">Update email / password</button>
+
+  <div class="account-form-group">
+    <label for="newEmail">New email</label>
+    <input id="newEmail" type="email">
+  </div>
+
+  <div class="account-form-group">
+    <label for="currentPassword">Current password</label>
+    <input id="currentPassword" type="password">
+  </div>
+
+  <div class="account-form-group">
+    <label for="newPassword">New password</label>
+    <input id="newPassword" type="password">
+  </div>
+
+  <div class="account-actions">
+    <button onclick="updateProfile()">Update email / password</button>
+  </div>
+
   <div id="profileMsg" style="margin-top:6px;color:green;"></div>
 </div>
+
 
 <script>
 function getToken(){return localStorage.getItem('adminToken')||'';}
@@ -1209,6 +1262,7 @@ app.listen(PORT, () => {
   console.log(`✓ MongoDB: ${MONGO_URI}`);
   console.log(`Test admin login: admin@grocery.com / admin123`);
 });
+
 
 
 

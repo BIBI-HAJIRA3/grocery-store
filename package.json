@@ -18,7 +18,7 @@
     "mongodb": "^7.0.0",
     "mongoose": "^9.0.0",
     "multer": "^2.0.2"
-    "cloudinary": "^1.x.x"
+  
 
 
   },

@@ -1,5 +1,4 @@
 // server.js
-
 const express = require('express');
 const mongoose = require('mongoose');
 const multer = require('multer');
@@ -9,7 +8,19 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
 
+// Cloudinary: used to store product images so your client never deals with URLs.
+// Values MUST come from environment variables (set these in Render dashboard).
+const cloudinary = require('cloudinary').v2;
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,   // dvsd1cvcs
+  api_key: process.env.CLOUDINARY_API_KEY,         // 435683111951679
+  api_secret: process.env.CLOUDINARY_API_SECRET    // 2nb4_cahAwLNl6jXqZEHRwDnIiA
+  // Do NOT hard‑code the secret in code; keep it only in env vars.
+});
+
 const app = express();
+
 
 // --------------------
 // Config
@@ -1113,6 +1124,7 @@ app.listen(PORT, () => {
   console.log(`✓ MongoDB: ${MONGO_URI}`);
   console.log(`Test admin login: admin@grocery.com / admin123`);
 });
+
 
 
 

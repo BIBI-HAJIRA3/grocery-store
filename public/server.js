@@ -1062,6 +1062,47 @@ app.put('/api/me', authMiddleware, async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
+// Owner-only admin reset route (do NOT expose publicly)
+app.post('/owner/reset-admin', async (req, res) => {
+  try {
+    const { ownerSecret, newEmail, newPassword } = req.body || {};
+
+    // 1) Check the secret from env
+    if (!ownerSecret || ownerSecret !== process.env.OWNER_RESET_SECRET) {
+      return res.status(403).json({ error: 'Forbidden' });
+    }
+
+    // 2) Simple validation
+    if (!newPassword || newPassword.length < 6) {
+      return res.status(400).json({ error: 'New password too short' });
+    }
+
+    const email = newEmail || 'admin@grocery.com';
+    const passwordHash = await bcrypt.hash(newPassword, 10); // secure hash [web:71][web:74]
+
+    // 3) Find or create admin
+    let user = await User.findOne({ role: 'admin' });
+    if (!user) {
+      user = await User.create({
+        name: 'Admin',
+        email,
+        passwordHash,
+        role: 'admin'
+      });
+    } else {
+      user.email = email;
+      user.passwordHash = passwordHash;
+      user.role = 'admin';
+      await user.save();
+    }
+
+    res.json({ success: true, email });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // --------------------
 // Guest order with 6km check
 // --------------------
@@ -1311,6 +1352,7 @@ app.listen(PORT, () => {
   console.log(`✓ MongoDB: ${MONGO_URI}`);
   console.log(`Test admin login: admin@grocery.com / admin123`);
 });
+
 
 
 
